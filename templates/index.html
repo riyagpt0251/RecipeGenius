@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecipeGenius</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #ffffff;
+            --text-color: #000000;
+            --recipe-background: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #121212;
+            --text-color: #ffffff;
+            --recipe-background: #1e1e1e;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            color: var(--primary-color);
+        }
+
+        form {
+            margin: 20px auto;
+            padding: 20px;
+            width: 50%;
+            background: var(--recipe-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .recipe-container {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .recipe {
+            background: var(--recipe-background);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .recipe:hover {
+            transform: translateY(-5px);
+        }
+
+        .loading-spinner {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 20px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-container {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .filter-container select {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <h1>RecipeGenius: AI Recipe Finder</h1>
+    <form method="POST" onsubmit="showLoading()">
+        <label for="ingredients">Enter Ingredients:</label><br>
+        <input type="text" id="ingredients" name="ingredients" placeholder="e.g., chicken, rice, tomatoes" required><br><br>
+        <div class="filter-container">
+            <select id="diet" name="diet">
+                <option value="">Any Diet</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="vegan">Vegan</option>
+                <option value="gluten-free">Gluten-Free</option>
+            </select>
+            <select id="cuisine" name="cuisine">
+                <option value="">Any Cuisine</option>
+                <option value="italian">Italian</option>
+                <option value="mexican">Mexican</option>
+                <option value="indian">Indian</option>
+            </select>
+        </div>
+        <button type="submit">Find Recipes</button>
+    </form>
+
+    <div class="loading-spinner" id="loadingSpinner"></div>
+
+    {% if recipes %}
+        <div class="recipe-container">
+            <h2>Suggested Recipes:</h2>
+            {% for recipe in recipes %}
+                <div class="recipe">
+                    <h3>{{ recipe['title'] }}</h3>
+                    <p><strong>Ingredients:</strong> {{ recipe['ingredients'] }}</p>
+                    <p><strong>Instructions:</strong> {{ recipe['instructions'] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="error-message">No recipes found. Try entering some ingredients!</p>
+    {% endif %}
+
+    <script>
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark';
+        }
+    </script>
+</body>
+</html>
